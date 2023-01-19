@@ -1,0 +1,30 @@
+.btnDetails {
+    background-color: rgb(88, 154, 150) !important;
+    border: 1px solid rgb(59, 103, 100) !important;
+    border-radius: 20px !important;
+}
+
+.card {
+    background-color: rgb(229, 225, 209) !important;
+    min-width: 700px;
+}
+
+.countryName {
+    font-size: large;
+    font-weight: bolder;
+}
+
+.details {
+    background-color: rgb(229, 225, 209) !important;
+    border-radius: 10px;
+    width: 500px !important;
+}
+
+.flag {
+    border: 1px solid black;
+    border-radius: 15px;
+}
+
+hr {
+    color: black !important;
+}
