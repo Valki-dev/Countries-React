@@ -7,6 +7,7 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [filter, setFilter] = useState("");
   const [countryToShow, setCountryToShow] = useState({});
+  const [countryWeather, setCountryWeather] = useState({});
 
   useEffect(() => {
     if(filter != "") {
@@ -23,7 +24,20 @@ function App() {
         console.log('error', error);
       });
     }
-  }, [filter])
+  }, [filter]);
+
+  useEffect(() => {
+    if(countryToShow) {
+      fetch(`http://api.weatherstack.com/current?access_key=276c6403285b5b852238655c4ca675c8&query=${countryToShow?.name?.common}`)
+    .then(response => response.json())
+    .then(result => {
+      if(result?.status != 404) {
+        setCountryWeather(result);
+      } 
+    })
+    }
+    
+  }, [countryToShow]);
 
   const handleSetFilter = (event) => {
     let filterWord = event.target.value;
@@ -42,7 +56,7 @@ function App() {
         <div className="row">
           <div className="col-12 col-lg-12">
             <div className="row">
-              <CountriesList countries={countries} countryToShow={countryToShow} setCountryToShow={setCountryToShow}></CountriesList>
+              <CountriesList countries={countries} countryToShow={countryToShow} setCountryToShow={setCountryToShow} countryWeather={countryWeather}></CountriesList>
             </div>
           </div>
         </div>

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import "./CountriesList.css"
 
-const CountriesList = ({ countries, countryToShow, setCountryToShow }) => {
+const CountriesList = ({ countries, countryToShow, setCountryToShow, countryWeather }) => {
     const [activateModal, setActivateModal] = useState(false);
     let countriesCopy = [...countries];
     let message = "";
+    let languagesOneCountry = null;
 
     if (countriesCopy.length <= 0) {
         message = "No se ha encontrado ningún país con ese nombre";
@@ -12,14 +13,15 @@ const CountriesList = ({ countries, countryToShow, setCountryToShow }) => {
     } else if (countriesCopy.length > 10) {
         message = "Demasiados resultados, especifica más la búsqueda";
         countriesCopy = [];
+    } else if (countriesCopy.length == 1) {
+        languagesOneCountry = Object.values(countriesCopy[0].languages);
+        setCountryToShow(countriesCopy[0]);
     }
 
     const showDetails = (country) => {
         setCountryToShow(country);
         setActivateModal(true);
-        console.log(country);
     }
-    console.log(activateModal);
 
     if (activateModal) {
         let languages = Object.values(countryToShow.languages);
@@ -38,21 +40,28 @@ const CountriesList = ({ countries, countryToShow, setCountryToShow }) => {
                                 <p><b>Capital:</b> {countryToShow.capital}</p>
                                 <p><b>Población:</b> {countryToShow.population}</p>
                                 <hr />
-                                <h5>Lenguas habladas</h5>
+                                <h5>Lenguas habladas:</h5>
                                 <ul>
-                                {
-                                   languages.map(language => {
-                                    return(
-                                        <li>{language}</li>
-                                    )
-                                   })
-                                }
+                                    {
+                                        languages.map((language, index) => {
+                                            return (
+                                                <li key={index}>{language}</li>
+                                            )
+                                        })
+                                    }
                                 </ul>
                                 <div className="d-flex justify-content-center">
                                     <img className="flag mb-3" src={countryToShow.flags.png} alt="Bandera no disponible" />
                                 </div>
                                 <hr />
-                                <h5>Weather in {countryToShow.capital}</h5>
+                                <h5>Tiempo en {countryToShow.capital}:</h5>
+                                <p><b>Temperatura:</b> {countryWeather?.current?.temperature}º C</p>
+                                <img src={countryWeather?.current?.weather_icons} alt="Imagen no disponible" />
+                                <p className="mt-3"><b>Viento:</b></p>
+                                <ul>
+                                    <li>Velocidad: {countryWeather?.current?.wind_speed} mph</li>
+                                    <li>Dirección: {countryWeather?.current?.wind_dir}</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
@@ -79,24 +88,47 @@ const CountriesList = ({ countries, countryToShow, setCountryToShow }) => {
                 {
                     countriesCopy.length == 1 && (
                         <div className="col-12 col-lg-12 d-flex justify-content-center">
-                            <div className="card">
+                            <div className="card" id="oneCountryCard">
                                 <div className="card-body">
-                                    <b>{countriesCopy[0].name.common}</b>
+                                    <h2 className="text-center">{countriesCopy[0].name.common}</h2>
                                     <hr />
-
+                                    <p><b>Capital:</b> {countriesCopy[0].capital}</p>
+                                    <p><b>Población:</b> {countriesCopy[0].population}</p>
+                                    <hr />
+                                    <h4>Lenguas habladas:</h4>
+                                    <ul>
+                                        {
+                                            languagesOneCountry.map((language, index) => {
+                                                return (
+                                                    <li key={index}>{language}</li>
+                                                )
+                                            })
+                                        }
+                                    </ul>
+                                    <div className="d-flex justify-content-center mt-2 mb-3">
+                                        <img className="flag mb-3" src={countriesCopy[0].flags.png} alt="Bandera no disponible" />
+                                    </div>
+                                    <hr />
+                                    <h4>Tiempo en {countriesCopy[0].capital}:</h4>
+                                    <p><b>Temperatura:</b> {countryWeather?.current?.temperature}º C</p>
+                                    <img src={countryWeather?.current?.weather_icons} alt="Imagen no disponible" />
+                                    <p className="mt-3"><b>Viento:</b></p>
+                                    <ul>
+                                        <li>Velocidad: {countryWeather?.current?.wind_speed} mph</li>
+                                        <li>Dirección: {countryWeather?.current?.wind_dir}</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
-
                     )
                 }
 
                 {
-                    countriesCopy.length > 1 && (
-                        countriesCopy.map((country) => {
+                    (countriesCopy.length > 1) && (countriesCopy.length < 10) && (
+                        countriesCopy.map((country, index) => {
                             return (
                                 <>
-                                    <div className="col-12 col-lg-12 d-flex justify-content-center">
+                                    <div className="col-12 col-lg-12 d-flex justify-content-center" key={index}>
                                         <div className="card mt-3">
                                             <div className="card-body d-flex justify-content-between">
 
@@ -111,33 +143,9 @@ const CountriesList = ({ countries, countryToShow, setCountryToShow }) => {
                     )
 
                 }
-
-                {/* {
-                    !activateModal && (
-                        <div className="modal">
-                            <div className="modal-dialog">
-                                <div className="modal-content">
-                                    <div className="modal-header">
-                                        <h5 className="modal-title">Modal title</h5>
-                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div className="modal-body">
-                                        <p>Modal body text goes here.</p>
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" className="btn btn-primary">Save changes</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )
-                } */}
             </>
         )
     }
-
-
 
 }
 
