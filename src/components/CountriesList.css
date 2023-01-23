@@ -28,3 +28,12 @@
 hr {
     color: black !important;
 }
+
+img {
+    border: 1px solid black;
+    border-radius: 15px;
+}
+
+#oneCountryCard {
+    border-radius: 20px !important;
+}
